@@ -8,5 +8,8 @@
   },
   "scripts": {
     "start": "node server.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.133.0"
   }
 }

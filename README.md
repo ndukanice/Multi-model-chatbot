@@ -1,6 +1,6 @@
 # Multi-Model Chatbot
 
-Ask once, compare every answer. The app sends the same prompt to Mistral, NVIDIA, and Hugging Face in parallel and shows each model's reply in its own card as soon as it arrives.
+Ask once, compare every answer. The app sends the same prompt to Claude (Anthropic), NVIDIA, and OpenRouter in parallel and shows each model's reply in its own card as soon as it arrives.
 
 Live: https://multi-model-api-chatbot.vercel.app/
 
@@ -16,21 +16,23 @@ Live: https://multi-model-api-chatbot.vercel.app/
 ## Run locally
 
 1. Copy `.env.example` to `.env` and add the API keys you want to use.
-2. Run `npm start` (Node 18+).
+2. Run `npm install`, then `npm start` (Node 18+).
 3. Open `http://localhost:5177`.
 
 Providers without a key show `Needs key`; the others answer normally.
 
 ## Deploy to Vercel
 
-1. Import this repository in Vercel (no build command needed).
-2. Under **Settings → Environment Variables**, add `MISTRAL_API_KEY`, `NVIDIA_API_KEY`, and `HF_TOKEN`, plus any `*_MODEL` overrides.
+1. Import this repository in Vercel (framework preset: Other, no build command).
+2. Under **Settings → Environment Variables**, add `ANTHROPIC_API_KEY`, `NVIDIA_API_KEY`, and `OPENROUTER_API_KEY`, plus any `*_MODEL` overrides.
 3. Deploy. Every push to `main` redeploys.
 
 ## Providers and default models
 
 | Provider | Endpoint | Key | Model (override) |
 | --- | --- | --- | --- |
-| Mistral | `api.mistral.ai/v1/chat/completions` | `MISTRAL_API_KEY` | `mistral-small-latest` (`MISTRAL_MODEL`) |
+| Claude | Anthropic Messages API via `@anthropic-ai/sdk` | `ANTHROPIC_API_KEY` | `claude-opus-5-5` (`ANTHROPIC_MODEL`) |
 | NVIDIA | `integrate.api.nvidia.com/v1/chat/completions` | `NVIDIA_API_KEY` | `nvidia/nemotron-3-nano-omni-30b-a3b-reasoning` (`NVIDIA_MODEL`) |
-| Hugging Face | `router.huggingface.co/v1/chat/completions` | `HF_TOKEN` | `meta-llama/Llama-3.1-8B-Instruct` (`HF_MODEL`) |
+| OpenRouter | `openrouter.ai/api/v1/chat/completions` | `OPENROUTER_API_KEY` | `google/gemma-4-31b-it:free` (`OPENROUTER_MODEL`) |
+
+Claude requests opt into Anthropic's server-side refusal fallback (`fallbacks: "default"`), so a safety decline is retried on Anthropic's recommended fallback model. Free OpenRouter models are often rate-limited, so OpenRouter requests also list `OPENROUTER_FALLBACK_MODELS` (comma-separated; default `nvidia/nemotron-3-super-120b-a12b:free`) for OpenRouter to try when the main model is busy. Set `OPENROUTER_MODEL` to any model ID from openrouter.ai/models.
