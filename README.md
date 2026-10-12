@@ -1,40 +1,36 @@
 # Multi-Model Chatbot
 
-A simple local chatbot that sends the same prompt to Mistral, NVIDIA, and Grok at the same time, then displays their answers side by side.
+Ask once, compare every answer. The app sends the same prompt to Mistral, NVIDIA, and Hugging Face in parallel and shows each model's reply in its own card as soon as it arrives.
 
-## Setup
+Live: https://multi-model-api-chatbot.vercel.app/
 
-1. Copy `.env.example` to `.env`.
-2. Add the API keys you want to use.
-3. Start the app:
+## Project layout
 
-```powershell
-npm start
-```
+- `public/`: static front end (HTML, CSS, JS)
+- `api/`: Vercel serverless functions
+  - `GET /api/providers`: lists providers and whether each has a key configured
+  - `POST /api/chat/:provider`: sends `{ "prompt": "..." }` to one provider
+- `lib/providers.mjs`: shared provider config and API calls
+- `server.mjs`: local dev server that serves `public/` and the same API routes
 
-4. Open `http://localhost:5177`.
+## Run locally
 
-## API Keys
+1. Copy `.env.example` to `.env` and add the API keys you want to use.
+2. Run `npm start` (Node 18+).
+3. Open `http://localhost:5177`.
 
-- Mistral uses `https://api.mistral.ai/v1/chat/completions`.
-- NVIDIA uses `https://integrate.api.nvidia.com/v1/chat/completions`.
-- Grok uses `https://api.x.ai/v1/chat/completions`.
+Providers without a key show `Needs key`; the others answer normally.
 
-The app will still open without keys. Any missing provider shows `Needs key` while configured providers can answer normally.
+## Deploy to Vercel
 
-## Model Defaults
+1. Import this repository in Vercel (no build command needed).
+2. Under **Settings → Environment Variables**, add `MISTRAL_API_KEY`, `NVIDIA_API_KEY`, and `HF_TOKEN`, plus any `*_MODEL` overrides.
+3. Deploy. Every push to `main` redeploys.
 
-- `MISTRAL_MODEL=mistral-small-latest`
-- `NVIDIA_MODEL=nvidia/llama-3.1-nemotron-nano-8b-v1`
-- `XAI_MODEL=grok-4.3`
+## Providers and default models
 
-Change those values in `.env` if your account exposes different free models.
-
-## Deploy to GitHub Pages
-
-1. Create a GitHub repository.
-2. Push this project to the repository.
-3. In GitHub, open Settings → Pages and select GitHub Actions as the source.
-4. Push to the `main` branch to trigger the workflow.
-
-> Note: the frontend can be hosted on GitHub Pages, but the live model calls still require the local Node backend. For a fully hosted production deployment, the backend should be moved to a service such as Render or Railway.
+| Provider | Endpoint | Key | Model (override) |
+| --- | --- | --- | --- |
+| Mistral | `api.mistral.ai/v1/chat/completions` | `MISTRAL_API_KEY` | `mistral-small-latest` (`MISTRAL_MODEL`) |
+| NVIDIA | `integrate.api.nvidia.com/v1/chat/completions` | `NVIDIA_API_KEY` | `nvidia/nemotron-3-nano-omni-30b-a3b-reasoning` (`NVIDIA_MODEL`) |
+| Hugging Face | `router.huggingface.co/v1/chat/completions` | `HF_TOKEN` | `meta-llama/Llama-3.1-8B-Instruct` (`HF_MODEL`) |
