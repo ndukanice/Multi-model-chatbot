@@ -1,6 +1,6 @@
 # Multi-Model Chatbot
 
-Ask once, compare every answer. The app sends the same prompt to Claude (Anthropic), NVIDIA, and OpenRouter in parallel and shows each model's reply in its own card as soon as it arrives.
+Ask once, compare every answer. The app sends the same prompt to Claude (Anthropic) and OpenRouter in parallel and shows each model's reply in its own card as soon as it arrives.
 
 Live: https://multi-model-api-chatbot.vercel.app/
 
@@ -24,7 +24,7 @@ Providers without a key show `Needs key`; the others answer normally.
 ## Deploy to Vercel
 
 1. Import this repository in Vercel (framework preset: Other, no build command).
-2. Under **Settings → Environment Variables**, add `ANTHROPIC_API_KEY`, `NVIDIA_API_KEY`, and `OPENROUTER_API_KEY`, plus any `*_MODEL` overrides.
+2. Under **Settings → Environment Variables**, add `ANTHROPIC_API_KEY` and `OPENROUTER_API_KEY`, plus any `*_MODEL` overrides.
 3. Deploy. Every push to `main` redeploys.
 
 ## Providers and default models
@@ -32,7 +32,6 @@ Providers without a key show `Needs key`; the others answer normally.
 | Provider | Endpoint | Key | Model (override) |
 | --- | --- | --- | --- |
 | Claude | Anthropic Messages API via `@anthropic-ai/sdk` | `ANTHROPIC_API_KEY` | `claude-opus-5-5` (`ANTHROPIC_MODEL`) |
-| NVIDIA | `integrate.api.nvidia.com/v1/chat/completions` | `NVIDIA_API_KEY` | `nvidia/nemotron-3-nano-omni-30b-a3b-reasoning` (`NVIDIA_MODEL`) |
 | OpenRouter | `openrouter.ai/api/v1/chat/completions` | `OPENROUTER_API_KEY` | `google/gemma-4-31b-it:free` (`OPENROUTER_MODEL`) |
 
-Claude requests opt into Anthropic's server-side refusal fallback (`fallbacks: "default"`), so a safety decline is retried on Anthropic's recommended fallback model. Free OpenRouter models are often rate-limited, so OpenRouter requests also list `OPENROUTER_FALLBACK_MODELS` (comma-separated; default `nvidia/nemotron-3-super-120b-a12b:free`) for OpenRouter to try when the main model is busy. Set `OPENROUTER_MODEL` to any model ID from openrouter.ai/models.
+Claude requests opt into Anthropic's server-side refusal fallback (`fallbacks: "default"`), so a safety decline is retried on Anthropic's recommended fallback model. Free OpenRouter models are often rate-limited, so OpenRouter requests also list `OPENROUTER_FALLBACK_MODELS` (comma-separated; default `poolside/laguna-s-2.1:free`) for OpenRouter to try when the main model is busy. Set `OPENROUTER_MODEL` to any model ID from openrouter.ai/models.
