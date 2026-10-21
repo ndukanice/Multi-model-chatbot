@@ -5,8 +5,5 @@
   "scripts": {
     "install:py": "pip install -r requirements.txt",
     "start": "python run.py"
-  },
-  "engines": {
-    "node": ">=18"
   }
 }
