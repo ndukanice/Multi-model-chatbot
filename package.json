@@ -2,14 +2,11 @@
   "name": "multi-model-chatbot",
   "version": "1.0.0",
   "private": true,
-  "type": "module",
+  "scripts": {
+    "install:py": "pip install -r requirements.txt",
+    "start": "python run.py"
+  },
   "engines": {
     "node": ">=18"
-  },
-  "scripts": {
-    "start": "node server.mjs"
-  },
-  "dependencies": {
-    "@anthropic-ai/sdk": "^0.133.0"
   }
 }

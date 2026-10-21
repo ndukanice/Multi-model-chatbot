@@ -24,13 +24,15 @@ function cardTemplate(provider) {
   return `
     <article class="result-card" data-provider="${escapeHtml(provider.id)}">
       <div class="result-header">
-        <div>
+        <div class="avatar" aria-hidden="true">${escapeHtml(provider.name.charAt(0))}</div>
+        <div class="provider-info">
           <h2>${escapeHtml(provider.name)}</h2>
           <p>${escapeHtml(provider.model)}</p>
         </div>
         ${badge}
       </div>
       <div class="answer muted">Waiting for your prompt.</div>
+      <div class="result-footer"><span class="meta"></span></div>
     </article>
   `;
 }
@@ -39,6 +41,7 @@ function setCardLoading(card) {
   const answer = card.querySelector(".answer");
   answer.className = "answer loading";
   answer.textContent = "Thinking...";
+  card.querySelector(".result-footer").innerHTML = `<span class="meta">Waiting for response...</span>`;
 }
 
 function updateCard(result) {
@@ -48,7 +51,34 @@ function updateCard(result) {
   const answer = card.querySelector(".answer");
   answer.className = result.ok ? "answer" : "answer error";
   answer.textContent = result.ok ? result.answer : result.error;
+
+  const footer = card.querySelector(".result-footer");
+  const seconds = result.elapsedMs ? `${(result.elapsedMs / 1000).toFixed(1)}s` : "";
+  footer.innerHTML = `<span class="meta">${result.ok ? `Answered in ${seconds}` : "Failed"}</span>`;
+  if (result.ok) {
+    const copy = document.createElement("button");
+    copy.type = "button";
+    copy.className = "copy-button";
+    copy.textContent = "Copy";
+    copy.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(result.answer);
+        copy.textContent = "Copied";
+      } catch {
+        copy.textContent = "Failed";
+      }
+      setTimeout(() => { copy.textContent = "Copy"; }, 1500);
+    });
+    footer.append(copy);
+  }
 }
+
+promptInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
+    event.preventDefault();
+    form.requestSubmit();
+  }
+});
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();

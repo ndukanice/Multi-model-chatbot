@@ -8,18 +8,20 @@
   </head>
   <body>
     <main class="app-shell">
-      <section class="composer" aria-label="Chat prompt">
-        <div>
-          <p class="eyebrow">Multi-model API chatbot</p>
-          <h1>Ask once. Compare every answer.</h1>
-        </div>
+      <header class="hero">
+        <p class="eyebrow">Multi-model API chatbot</p>
+        <h1>Ask once. <span>Compare every answer.</span></h1>
+        <p class="subtitle">One prompt, sent to every model at the same time. See who answers best, and how fast.</p>
+      </header>
 
+      <section class="composer" aria-label="Chat prompt">
         <form id="chat-form">
           <label for="prompt">Prompt</label>
-          <textarea id="prompt" name="prompt" rows="5" placeholder="Ask the models anything..." required></textarea>
+          <textarea id="prompt" name="prompt" rows="4" placeholder="Ask the models anything..." required></textarea>
           <div class="actions">
             <button type="submit" id="send-button">Send to all models</button>
             <span id="status" role="status"></span>
+            <span class="hint"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> to send</span>
           </div>
         </form>
       </section>
